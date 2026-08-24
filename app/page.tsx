@@ -1,122 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useState } from "react";
 
-function Shell({
-  title,
-  subtitle,
-  badge = "Portfolio demo · local-only",
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  badge?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-black dark:text-zinc-100">
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <header className="mb-8">
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">{badge}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{title}</h1>
-          <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{subtitle}</p>
-        </header>
-        {children}
-        <footer className="mt-10 border-t border-zinc-200 pt-4 text-xs text-zinc-500 dark:border-zinc-800">
-          Honest demo: no multi-tenant backend. State (if any) stays in this browser.
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-function Button({
-  children,
-  onClick,
-  variant = "primary",
-  disabled,
-  type = "button",
-  className = "",
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-  variant?: "primary" | "secondary" | "ghost" | "danger";
-  disabled?: boolean;
-  type?: "button" | "submit";
-  className?: string;
-}) {
-  const base =
-    "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition disabled:opacity-50 " +
-    className;
-  const styles =
-    variant === "primary"
-      ? "bg-zinc-900 text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900"
-      : variant === "secondary"
-        ? "bg-white text-zinc-900 ring-1 ring-zinc-200 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-100 dark:ring-zinc-700"
-        : variant === "danger"
-          ? "bg-red-600 text-white hover:bg-red-500"
-          : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900";
-  return (
-    <button type={type} disabled={disabled} onClick={onClick} className={`${base} ${styles}`}>
-      {children}
-    </button>
-  );
-}
-
-const inputClass =
-  "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-700 dark:bg-zinc-950";
-
-function useLocalStorage<T>(key: string, initial: T) {
-  const [value, setValue] = useState<T>(initial);
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw != null) setValue(JSON.parse(raw) as T);
-    } catch {
-      /* ignore */
-    }
-    setReady(true);
-  }, [key]);
-  useEffect(() => {
-    if (!ready) return;
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value, ready]);
-  return [value, setValue] as const;
-}
-
-function uid() {
-  return crypto.randomUUID();
-}
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
+const presets = [
+  ["WHEN THE BUILD PASSES", "ON THE FIRST TRY"],
+  ["ME: I WILL KEEP IT SIMPLE", "THE SCOPE: ABSOLUTELY NOT"],
+  ["SHIP THE SMALL THING", "THEN MAKE IT STRANGE"],
+];
 
 export default function Home() {
-  const [top, setTop] = useState("WHEN THE BUILD PASSES");
-  const [bottom, setBottom] = useState("ON THE FIRST TRY");
-  const [color, setColor] = useState("#ffffff");
+  const [top, setTop] = useState(presets[0][0]);
+  const [bottom, setBottom] = useState(presets[0][1]);
+  const [ink, setInk] = useState("#f7f0da");
+  const [preset, setPreset] = useState(0);
+
+  function shuffle() {
+    const next = (preset + 1) % presets.length;
+    setPreset(next); setTop(presets[next][0]); setBottom(presets[next][1]);
+  }
+
   return (
-    <Shell title="Meme Generator" subtitle="Overlay captions on a gradient canvas — pure client-side fun.">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <input className={inputClass} value={top} onChange={(e) => setTop(e.target.value)} />
-          <input className={inputClass} value={bottom} onChange={(e) => setBottom(e.target.value)} />
-          <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 w-full" />
-        </div>
-        <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 text-center">
-          <div className="absolute inset-x-0 top-4 px-4 text-lg font-black uppercase tracking-wide drop-shadow" style={{ color }}>{top}</div>
-          <div className="absolute inset-x-0 bottom-4 px-4 text-lg font-black uppercase tracking-wide drop-shadow" style={{ color }}>{bottom}</div>
-          <div className="text-6xl opacity-30">🐸</div>
-        </div>
-      </div>
-    </Shell>
+    <main className="meme-shell">
+      <header className="meme-topbar"><a href="/" className="meme-mark">PRESS / LOL</a><span>caption overlay studio</span><span>client-side only</span></header>
+      <section className="meme-hero"><div><h1>Set the joke.<br /><em>Print the moment.</em></h1><p>A tiny caption press for quick ideas, internal jokes, and the moment a build finally behaves.</p></div><div className="ink-badge">INK<br />01</div></section>
+      <section className="meme-workbench"><div className="caption-controls"><div className="control-head"><span>01 / Captions</span><button onClick={shuffle}>Shuffle preset ↻</button></div><label><span>Top line</span><input aria-label="Top caption" value={top} onChange={(event) => setTop(event.target.value)} /></label><label><span>Bottom line</span><input aria-label="Bottom caption" value={bottom} onChange={(event) => setBottom(event.target.value)} /></label><label className="ink-picker"><span>Ink color</span><input aria-label="Caption color" type="color" value={ink} onChange={(event) => setInk(event.target.value)} /><b>{ink}</b></label><p className="control-note">The canvas is a local proof. No image upload, account, or publishing service is attached.</p></div><figure className="meme-press"><div className="canvas-label"><span>02 / Live proof</span><span>800 × 450</span></div><div className="meme-canvas"><svg viewBox="0 0 800 450" role="img" aria-label="Abstract caption canvas illustration"><rect width="800" height="450" fill="#e4634c" /><circle cx="655" cy="72" r="130" fill="#f0ce4e" /><path d="M0 350 C150 265 245 390 370 315 C520 225 615 330 800 225 L800 450 L0 450Z" fill="#1b3f79" /><path d="M265 270 C285 190 420 172 475 270 L450 355 L285 355Z" fill="#f7f0da" /><circle cx="330" cy="250" r="25" fill="#1b3f79" /><circle cx="410" cy="250" r="25" fill="#1b3f79" /><circle cx="330" cy="250" r="8" fill="#f7f0da" /><circle cx="410" cy="250" r="8" fill="#f7f0da" /><path d="M335 303 Q370 326 407 303" fill="none" stroke="#1b3f79" strokeWidth="10" strokeLinecap="round" /><path d="M80 80 H230 M80 100 H180" stroke="#1b3f79" strokeWidth="10" /></svg><div className="caption top-caption" style={{ color: ink }}>{top}</div><div className="caption bottom-caption" style={{ color: ink }}>{bottom}</div></div><figcaption>Live caption overlay / local-only demo</figcaption></figure></section>
+      <footer className="meme-footer"><span>BOOKCHAOWALIT / MEME GENERATOR</span><span>MAKE THE THING · KEEP THE RECEIPT</span></footer>
+    </main>
   );
 }

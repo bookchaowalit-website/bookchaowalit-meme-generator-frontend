@@ -1,0 +1,56 @@
+---
+name: Press / LOL
+description: A small screen-print caption press for composing a two-line meme proof locally.
+---
+
+# Design System: Press / LOL
+
+## Overview
+
+**Creative North Star: “The joke is set in ink.”**
+
+Press / LOL is a caption overlay studio, not a media editor or image-generation product. The user writes a top line and a bottom line, chooses an ink color, sees the result on an authored vector proof, and can shuffle to a local preset. The screen-print metaphor gives the tiny tool a memorable own-world.
+
+## Colors
+
+- Midnight ink `#111522` is the press room.
+- Coral paper `#f06b55` is the authored proof ground.
+- Registration yellow `#f2d34f` marks controls and live selection.
+- Signal blue `#6d8cf2` is reserved for secondary annotations.
+- White `#f5f0df` is readable copy; avoid gradients so flat ink stays intentional.
+
+## Typography
+
+- Poster captions use a condensed sans stack with heavy weight, uppercase, and a restrained ink outline.
+- UI labels use a monospace stack for press marks and control names.
+- Supporting copy stays small and direct; it should never compete with the proof.
+
+## Layout
+
+- Controls and the live 16:9 proof share the first viewport on desktop.
+- The proof is a single authored vector face with caption layers; controls sit beside it as a press ticket.
+- On mobile the ticket comes first, then the proof at a readable width, then the local-only note.
+
+## Elevation & Depth
+
+Flat poster planes and registration rules create depth. The proof has a hard border; no glass panel or shadow stack is needed.
+
+## Shapes
+
+Use square press controls and small 2px corners. The vector’s circular face is content, not a reusable card shape. Avoid pill-heavy controls.
+
+## Components
+
+- **Caption ticket:** top/bottom text fields, color input, and preset action.
+- **Live proof:** authored inline SVG with two positioned caption layers.
+- **Press mark:** communicates that output is a local visual proof, not a downloadable image pipeline.
+- **Preset shuffle:** changes the text locally without pretending to fetch trends.
+
+## Do's and Don'ts
+
+- Do keep the caption result visible while editing.
+- Do make the vector artwork authored and deterministic.
+- Do state that the tool is client-only and does not export an image file yet.
+- Don't imply social trend data, AI generation, or production image export.
+- Don't use Impact/Arial Black as a default display voice or turn the proof into a generic card.
+
